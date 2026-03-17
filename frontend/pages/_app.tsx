@@ -6,11 +6,13 @@ import type { AppProps } from "next/app";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
 import theme from "@/styles/theme";
+import NavBar from "@/components/NavBar";
 
 export default function App({ Component, pageProps, router }: AppProps) {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      <NavBar />
       <div style={{ paddingTop: "64px" }}>
         <AnimatePresence mode="wait">
           <motion.div
