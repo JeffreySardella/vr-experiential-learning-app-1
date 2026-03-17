@@ -1,7 +1,25 @@
 import React, { useState, ChangeEvent } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
+import { Box, Typography, TextField, Breadcrumbs } from "@mui/material";
+import { withAuth } from "@/lib/auth";
+import PageContainer from "@/components/ui/PageContainer";
+import SectionHeader from "@/components/ui/SectionHeader";
+import GlassCard from "@/components/ui/GlassCard";
+import GradientButton from "@/components/ui/GradientButton";
 
-const CreateInstitution = () => {
+const darkTextFieldSx = {
+  "& .MuiOutlinedInput-root": {
+    color: "#f1f5f9",
+    "& fieldset": { borderColor: "rgba(59, 130, 246, 0.2)" },
+    "&:hover fieldset": { borderColor: "rgba(59, 130, 246, 0.4)" },
+    "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
+  },
+  "& .MuiInputLabel-root": { color: "#94a3b8" },
+  "& .MuiInputLabel-root.Mui-focused": { color: "#3b82f6" },
+};
+
+const CreateInstitution = ({ user }: { user: any }) => {
   const [name, setName] = useState("");
   const router = useRouter();
 
@@ -12,7 +30,7 @@ const CreateInstitution = () => {
   const handleCreate = async () => {
     try {
       const response = await fetch(`${process.env.API_URL}/api/institutions/`, {
-        credentials: 'include',
+        credentials: "include",
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -32,49 +50,43 @@ const CreateInstitution = () => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "25vh",
-      }}
-    >
-      <form style={{ textAlign: "center", width: "400px" }}>
-        <h1 style={{ fontSize: "2em" }}>Create New Institution</h1>
-        <label style={{ display: "block", marginBottom: "10px" }}>
-          Name:
-          <p></p>
-          <input
-            type="text"
+    <PageContainer sx={{ background: "#0a0f1e" }}>
+      <Breadcrumbs sx={{ mb: 2, "& .MuiBreadcrumbs-separator": { color: "#94a3b8" } }}>
+        <Link href="/dashboard/admin" style={{ color: "#3b82f6", textDecoration: "none" }}>
+          Dashboard
+        </Link>
+        <Link href="/institutions" style={{ color: "#3b82f6", textDecoration: "none" }}>
+          Institutions
+        </Link>
+        <Typography sx={{ color: "#f1f5f9" }}>Create</Typography>
+      </Breadcrumbs>
+
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          mt: 4,
+        }}
+      >
+        <GlassCard sx={{ p: 4, maxWidth: 500, width: "100%" }}>
+          <SectionHeader title="Create New Institution" gradient align="center" />
+
+          <TextField
+            fullWidth
+            label="Institution Name"
             value={name}
             onChange={handleNameChange}
-            style={{
-              border: "1px solid black",
-              padding: "8px",
-              borderRadius: "4px",
-            }}
+            sx={{ ...darkTextFieldSx, mb: 3 }}
           />
-        </label>
-        <div style={{ marginTop: "10px" }}>
-          <button
-            type="button"
-            onClick={handleCreate}
-            style={{
-              padding: "8px 16px",
-              cursor: "pointer",
-              backgroundColor: "#007BFF",
-              color: "#FFFFFF",
-              borderRadius: "4px",
-              border: "none",
-            }}
-          >
+
+          <GradientButton fullWidth onClick={handleCreate}>
             Create
-          </button>
-        </div>
-      </form>
-    </div>
+          </GradientButton>
+        </GlassCard>
+      </Box>
+    </PageContainer>
   );
 };
 
-export default CreateInstitution;
+export default withAuth(CreateInstitution, ["admin"]);

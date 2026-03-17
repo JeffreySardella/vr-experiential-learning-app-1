@@ -1,10 +1,35 @@
 import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
-import { Institution } from "./interfaces";
-import { Program } from "./interfaces";
 import Link from "next/link";
+import { Institution, Program } from "./interfaces";
+import {
+  Box,
+  Typography,
+  TextField,
+  Grid,
+  CardContent,
+  Breadcrumbs,
+  Stack,
+} from "@mui/material";
+import { withAuth } from "@/lib/auth";
+import PageContainer from "@/components/ui/PageContainer";
+import SectionHeader from "@/components/ui/SectionHeader";
+import GlassCard from "@/components/ui/GlassCard";
+import GradientButton from "@/components/ui/GradientButton";
+import FolderIcon from "@mui/icons-material/Folder";
 
-const InstitutionDetailPage: React.FC = () => {
+const darkTextFieldSx = {
+  "& .MuiOutlinedInput-root": {
+    color: "#f1f5f9",
+    "& fieldset": { borderColor: "rgba(59, 130, 246, 0.2)" },
+    "&:hover fieldset": { borderColor: "rgba(59, 130, 246, 0.4)" },
+    "&.Mui-focused fieldset": { borderColor: "#3b82f6" },
+  },
+  "& .MuiInputLabel-root": { color: "#94a3b8" },
+  "& .MuiInputLabel-root.Mui-focused": { color: "#3b82f6" },
+};
+
+const InstitutionDetailPage = ({ user }: { user: any }) => {
   const router = useRouter();
   const { id } = router.query;
   const [institution, setInstitution] = useState<Institution>();
@@ -25,9 +50,8 @@ const InstitutionDetailPage: React.FC = () => {
         },
         body: JSON.stringify({ name }),
       });
-      // After creating the program, refetch the programs list
       fetchPrograms();
-      setName(""); // Clear the input field
+      setName("");
     } catch (error) {
       console.error(error);
     }
@@ -58,57 +82,92 @@ const InstitutionDetailPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchInstitution();
-    fetchPrograms();
-  }, []);
+    if (id) {
+      fetchInstitution();
+      fetchPrograms();
+    }
+  }, [id]);
 
   return (
-    <div style={{ paddingLeft: "25px" }}>
-      <h1 style={{ fontSize: "2em" }}>Institution: {institution?.name}</h1>
-      <p>______________________________________________</p>
-      <h2 style={{ fontSize: "1.5em" }}>Programs: </h2>
-      <ul>
+    <PageContainer sx={{ background: "#0a0f1e" }}>
+      <Breadcrumbs sx={{ mb: 2, "& .MuiBreadcrumbs-separator": { color: "#94a3b8" } }}>
+        <Link href="/dashboard/admin" style={{ color: "#3b82f6", textDecoration: "none" }}>
+          Dashboard
+        </Link>
+        <Link href="/institutions" style={{ color: "#3b82f6", textDecoration: "none" }}>
+          Institutions
+        </Link>
+        <Typography sx={{ color: "#f1f5f9" }}>{institution?.name}</Typography>
+      </Breadcrumbs>
+
+      <SectionHeader
+        title={`Institution: ${institution?.name || ""}`}
+        gradient
+      />
+
+      <Typography
+        variant="h6"
+        sx={{ color: "#f1f5f9", fontWeight: 600, mb: 2, mt: 2 }}
+      >
+        Programs
+      </Typography>
+
+      <Grid container spacing={3} sx={{ mb: 4 }}>
         {programs.map((program) => (
-          <li key={program.id}>
-            <Link href={`/institutions/${id}/program/${program.id}`}>
-              <strong>{program.name}</strong>
-            </Link>
-          </li>
+          <Grid item xs={12} sm={6} md={4} key={program.id}>
+            <GlassCard
+              glow
+              sx={{ cursor: "pointer" }}
+              onClick={() =>
+                router.push(`/institutions/${id}/program/${program.id}`)
+              }
+            >
+              <CardContent sx={{ p: 3 }}>
+                <Box
+                  sx={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: "10px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    background: "rgba(6, 182, 212, 0.15)",
+                    mb: 2,
+                  }}
+                >
+                  <FolderIcon sx={{ color: "#06b6d4" }} />
+                </Box>
+                <Typography variant="h6" sx={{ color: "#f1f5f9", fontWeight: 600 }}>
+                  {program.name}
+                </Typography>
+              </CardContent>
+            </GlassCard>
+          </Grid>
         ))}
-      </ul>
-      <br></br>
-      <h3 style={{ fontSize: "1em", fontWeight: "bold" }}>Add Program:</h3>
-      <form onSubmit={handleCreate}>
-        <label style={{ display: "block", marginBottom: "10px" }}>
-          Name:
-          <p></p>
-          <input
-            type="text"
-            value={name}
-            onChange={handleNameChange}
-            style={{
-              border: "1px solid black",
-              padding: "8px",
-              borderRadius: "4px",
-            }}
-          />
-        </label>
-        <button
-          type="submit"
-          style={{
-            padding: "8px 16px",
-            cursor: "pointer",
-            backgroundColor: "#007BFF",
-            color: "#FFFFFF",
-            borderRadius: "4px",
-            border: "none",
-          }}
+      </Grid>
+
+      <GlassCard sx={{ p: 3, maxWidth: 500 }}>
+        <Typography
+          variant="subtitle1"
+          sx={{ color: "#f1f5f9", fontWeight: 600, mb: 2 }}
         >
-          Create
-        </button>
-      </form>
-    </div>
+          Add Program
+        </Typography>
+        <form onSubmit={handleCreate}>
+          <Stack direction="row" spacing={2} alignItems="center">
+            <TextField
+              label="Program Name"
+              size="small"
+              value={name}
+              onChange={handleNameChange}
+              sx={{ ...darkTextFieldSx, flexGrow: 1 }}
+            />
+            <GradientButton type="submit">Create</GradientButton>
+          </Stack>
+        </form>
+      </GlassCard>
+    </PageContainer>
   );
 };
 
-export default InstitutionDetailPage;
+export default withAuth(InstitutionDetailPage, ["admin"]);
