@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import HeroSection from "@/components/landing/HeroSection";
 import FeaturesSection from "@/components/landing/FeaturesSection";
 import HowItWorksSection from "@/components/landing/HowItWorksSection";
+import RoleShowcase from "@/components/landing/RoleShowcase";
+import Footer from "@/components/landing/Footer";
 import { dashboardAdmin, dashboardInstructor, dashboardStudent } from "@/links/links";
 
 const Home = () => {
@@ -43,6 +45,8 @@ const Home = () => {
       <HeroSection />
       <FeaturesSection />
       <HowItWorksSection />
+      <RoleShowcase />
+      <Footer />
     </main>
   );
 };
