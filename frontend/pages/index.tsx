@@ -1,41 +1,46 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import HeroSection from "@/components/landing/HeroSection";
+import { dashboardAdmin, dashboardInstructor, dashboardStudent } from "@/links/links";
 
 const Home = () => {
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const checkAuth = async () => {
       try {
         const response = await fetch(`${process.env.API_URL}/api/auth/user`, {
           credentials: "include",
         });
         if (response.ok) {
           const userData = await response.json();
-          const isInstructor = userData.groups.some(
-            (group) => group.name === "admin"
+          const isAdmin = userData.groups.some(
+            (group: { name: string }) => group.name === "admin"
           );
           const isInstructor = userData.groups.some(
-            (group) => group.name === "instructor"
+            (group: { name: string }) => group.name === "instructor"
           );
-          if (isInstructor) {
-            router.push("/dashboard/admin");
-          }
-          if (isInstructor) {
-            router.push("/dashboard/instructor");
-          }
-        } else {
-          console.error("Failed to fetch user data");
+          if (isAdmin) router.push(dashboardAdmin);
+          else if (isInstructor) router.push(dashboardInstructor);
+          else router.push(dashboardStudent);
+          return;
         }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
+      } catch {
+        // Not authenticated — show landing
       }
+      setLoading(false);
     };
+    checkAuth();
+  }, [router]);
 
-    fetchUser();
-  }, []);
+  if (loading) return null;
 
-  return <main></main>;
+  return (
+    <main>
+      <HeroSection />
+    </main>
+  );
 };
 
 export default Home;
