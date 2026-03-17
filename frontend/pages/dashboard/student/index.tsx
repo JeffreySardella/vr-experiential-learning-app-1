@@ -8,6 +8,7 @@ import {
   Stack,
   CardContent,
 } from "@mui/material";
+import Link from "next/link";
 import { withAuth } from "@/lib/auth";
 import { apiGet } from "@/lib/api";
 import PageContainer from "@/components/ui/PageContainer";
@@ -133,39 +134,40 @@ function StudentDashboard({ user }: { user: UserData }) {
               const progress = getCourseProgress(course.id);
               return (
                 <Grid item xs={12} sm={6} key={course.id}>
-                  <GlassCard
-                    glow
-                    sx={{ cursor: "pointer" }}
-                    onClick={() => router.push(`/dashboard/student/course/${course.id}`)}
-                  >
-                    <CardContent>
-                      <Typography variant="h6" sx={{ fontWeight: 600, color: "#fff", mb: 0.5 }}>
-                        {course.name}
-                      </Typography>
-                      <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.5)", mb: 2 }}>
-                        {course.program_name || course.program?.name || ""}
-                      </Typography>
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                        <LinearProgress
-                          variant="determinate"
-                          value={progress}
-                          sx={{
-                            flex: 1,
-                            height: 6,
-                            borderRadius: 3,
-                            bgcolor: "rgba(255,255,255,0.08)",
-                            "& .MuiLinearProgress-bar": {
-                              borderRadius: 3,
-                              background: "linear-gradient(90deg, #3b82f6, #06b6d4)",
-                            },
-                          }}
-                        />
-                        <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.6)", minWidth: 32 }}>
-                          {progress}%
+                  <Link href={`/dashboard/student/course/${course.id}`} style={{ textDecoration: "none" }}>
+                    <GlassCard
+                      glow
+                      sx={{ cursor: "pointer" }}
+                    >
+                      <CardContent>
+                        <Typography variant="h6" sx={{ fontWeight: 600, color: "#fff", mb: 0.5 }}>
+                          {course.name}
                         </Typography>
-                      </Box>
-                    </CardContent>
-                  </GlassCard>
+                        <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.5)", mb: 2 }}>
+                          {course.program_name || course.program?.name || ""}
+                        </Typography>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                          <LinearProgress
+                            variant="determinate"
+                            value={progress}
+                            sx={{
+                              flex: 1,
+                              height: 6,
+                              borderRadius: 3,
+                              bgcolor: "rgba(255,255,255,0.08)",
+                              "& .MuiLinearProgress-bar": {
+                                borderRadius: 3,
+                                background: "linear-gradient(90deg, #3b82f6, #06b6d4)",
+                              },
+                            }}
+                          />
+                          <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.6)", minWidth: 32 }}>
+                            {progress}%
+                          </Typography>
+                        </Box>
+                      </CardContent>
+                    </GlassCard>
+                  </Link>
                 </Grid>
               );
             })}

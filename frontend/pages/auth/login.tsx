@@ -41,9 +41,9 @@ export default function LoginPage() {
         const groups = userData.user?.groups || [];
         const isAdmin = groups.some((g: { name: string }) => g.name === "admin");
         const isInstructor = groups.some((g: { name: string }) => g.name === "instructor");
-        if (isAdmin) router.push(dashboardAdmin);
-        else if (isInstructor) router.push(dashboardInstructor);
-        else router.push(dashboardStudent);
+        if (isAdmin) { router.push(dashboardAdmin); return; }
+        else if (isInstructor) { router.push(dashboardInstructor); return; }
+        else { router.push(dashboardStudent); return; }
       } else {
         const data = await res.json();
         setError(data.non_field_errors?.[0] || "Invalid email or password.");

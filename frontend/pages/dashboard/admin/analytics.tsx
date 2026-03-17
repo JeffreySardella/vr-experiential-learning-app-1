@@ -21,11 +21,14 @@ import StatBadge from "@/components/ui/StatBadge";
 const CHART_COLORS = ["#3b82f6", "#06b6d4", "#8b5cf6", "#22c55e", "#f59e0b", "#ef4444"];
 
 interface OverviewData {
-  total_students?: number;
-  total_instructors?: number;
-  total_admins?: number;
-  total_courses?: number;
-  total_videos?: number;
+  users?: {
+    total?: number;
+    students?: number;
+    instructors?: number;
+    admins?: number;
+  };
+  courses?: number;
+  videos?: number;
 }
 
 interface CourseStats {
@@ -111,9 +114,9 @@ const Analytics = ({ user }: { user: any }) => {
   }, []);
 
   const roleData = [
-    { name: "Students", value: overview.total_students || 0 },
-    { name: "Instructors", value: overview.total_instructors || 0 },
-    { name: "Admins", value: overview.total_admins || 0 },
+    { name: "Students", value: overview.users?.students || 0 },
+    { name: "Instructors", value: overview.users?.instructors || 0 },
+    { name: "Admins", value: overview.users?.admins || 0 },
   ].filter((d) => d.value > 0);
 
   if (loading) {
@@ -143,11 +146,11 @@ const Analytics = ({ user }: { user: any }) => {
 
       {/* Stat Badges Row */}
       <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap", mb: 4 }}>
-        <StatBadge label="Students" value={overview.total_students || 0} color="primary" />
-        <StatBadge label="Instructors" value={overview.total_instructors || 0} color="secondary" />
-        <StatBadge label="Admins" value={overview.total_admins || 0} color="info" />
-        <StatBadge label="Courses" value={overview.total_courses || 0} color="primary" />
-        <StatBadge label="Videos" value={overview.total_videos || 0} color="secondary" />
+        <StatBadge label="Students" value={overview.users?.students || 0} color="primary" />
+        <StatBadge label="Instructors" value={overview.users?.instructors || 0} color="secondary" />
+        <StatBadge label="Admins" value={overview.users?.admins || 0} color="info" />
+        <StatBadge label="Courses" value={overview.courses || 0} color="primary" />
+        <StatBadge label="Videos" value={overview.videos || 0} color="secondary" />
       </Box>
 
       <Grid container spacing={3} sx={{ mb: 4 }}>
