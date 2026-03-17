@@ -5,11 +5,23 @@ import {
   AccordionDetails,
   Typography,
   Stack,
-  Button,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import VideoContent from "./VideoContent";
 import VideoSelector from "./VideoSelector";
+import GradientButton from "@/components/ui/GradientButton";
+
+const accordionSx = {
+  mb: 2,
+  background: "rgba(21, 27, 46, 0.6)",
+  backdropFilter: "blur(20px)",
+  border: "1px solid rgba(59, 130, 246, 0.1)",
+  borderRadius: "8px !important",
+  "&:before": { display: "none" },
+  "& .MuiAccordionSummary-root": {
+    borderBottom: "1px solid rgba(59, 130, 246, 0.1)",
+  },
+};
 
 const SubjectContent = ({ subject, updateContent }) => {
   const hasContent = subject.videos.length > 0 || subject.subjects.length > 0;
@@ -46,12 +58,16 @@ const SubjectContent = ({ subject, updateContent }) => {
   };
 
   return (
-    <Accordion sx={{ mb: 2 }}>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <Typography variant="h5">{subject.name}</Typography>
+    <Accordion sx={accordionSx}>
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon sx={{ color: "#94a3b8" }} />}
+      >
+        <Typography variant="h5" sx={{ color: "#f1f5f9", fontWeight: 600 }}>
+          {subject.name}
+        </Typography>
       </AccordionSummary>
       <AccordionDetails>
-        <Typography variant="body2" paragraph>
+        <Typography variant="body2" paragraph sx={{ color: "#94a3b8" }}>
           {subject.description}
         </Typography>
         {hasContent ? (
@@ -74,11 +90,16 @@ const SubjectContent = ({ subject, updateContent }) => {
             ))}
           </Stack>
         ) : (
-          <Typography variant="body1">No content available.</Typography>
+          <Typography sx={{ color: "#94a3b8" }}>
+            No content available.
+          </Typography>
         )}
-        <Button variant="contained" onClick={handleOpenVideoSelector}>
+        <GradientButton
+          onClick={handleOpenVideoSelector}
+          sx={{ mt: 2 }}
+        >
           Add Video
-        </Button>
+        </GradientButton>
         <VideoSelector
           open={isVideoSelectorOpen}
           onClose={handleCloseVideoSelector}

@@ -4,7 +4,6 @@ import VideoContent from "./VideoContent";
 import VideoSelector from "./VideoSelector";
 import {
   Box,
-  Button,
   Typography,
   Stack,
   Accordion,
@@ -12,6 +11,19 @@ import {
   AccordionDetails,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import GradientButton from "@/components/ui/GradientButton";
+
+const accordionSx = {
+  mb: 2,
+  background: "rgba(21, 27, 46, 0.6)",
+  backdropFilter: "blur(20px)",
+  border: "1px solid rgba(59, 130, 246, 0.1)",
+  borderRadius: "8px !important",
+  "&:before": { display: "none" },
+  "& .MuiAccordionSummary-root": {
+    borderBottom: "1px solid rgba(59, 130, 246, 0.1)",
+  },
+};
 
 const CourseContent = ({ courseId }) => {
   const [courseData, setCourseData] = useState(null);
@@ -20,7 +32,6 @@ const CourseContent = ({ courseId }) => {
 
   const updateContent = async () => {
     setReloadTrigger((prev) => prev + 1);
-    console.log(reloadTrigger);
   };
 
   const fetchCourseData = async () => {
@@ -62,12 +73,24 @@ const CourseContent = ({ courseId }) => {
   };
 
   if (!courseData) {
-    return <p>Loading...</p>;
+    return (
+      <Typography sx={{ color: "#94a3b8" }}>Loading...</Typography>
+    );
   }
 
   return (
     <Box p={2}>
-      <Typography variant="h4" gutterBottom>
+      <Typography
+        variant="h4"
+        gutterBottom
+        sx={{
+          color: "#f1f5f9",
+          fontWeight: 700,
+          background: "linear-gradient(135deg, #3b82f6, #06b6d4)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+        }}
+      >
         {courseData.name}
       </Typography>
       <Stack spacing={2}>
@@ -78,9 +101,13 @@ const CourseContent = ({ courseId }) => {
             updateContent={updateContent}
           />
         ))}
-        <Accordion sx={{ mb: 2 }}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="h5">Other Content</Typography>
+        <Accordion sx={accordionSx}>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon sx={{ color: "#94a3b8" }} />}
+          >
+            <Typography variant="h5" sx={{ color: "#f1f5f9", fontWeight: 600 }}>
+              Other Content
+            </Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Stack spacing={2}>
@@ -94,14 +121,16 @@ const CourseContent = ({ courseId }) => {
                   />
                 ))
               ) : (
-                <Typography variant="body1">No content available.</Typography>
+                <Typography sx={{ color: "#94a3b8" }}>
+                  No content available.
+                </Typography>
               )}
-              <Button
-                variant="contained"
+              <GradientButton
                 onClick={() => setIsVideoSelectorOpen(true)}
+                sx={{ alignSelf: "flex-start" }}
               >
                 Add Video
-              </Button>
+              </GradientButton>
             </Stack>
           </AccordionDetails>
         </Accordion>
