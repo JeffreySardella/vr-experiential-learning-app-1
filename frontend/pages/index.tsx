@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import HeroSection from "@/components/landing/HeroSection";
+import FeaturesSection from "@/components/landing/FeaturesSection";
+import HowItWorksSection from "@/components/landing/HowItWorksSection";
 import { dashboardAdmin, dashboardInstructor, dashboardStudent } from "@/links/links";
 
 const Home = () => {
@@ -39,6 +41,8 @@ const Home = () => {
   return (
     <main>
       <HeroSection />
+      <FeaturesSection />
+      <HowItWorksSection />
     </main>
   );
 };
