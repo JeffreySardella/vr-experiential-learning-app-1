@@ -31,6 +31,7 @@ class Course(models.Model):
     name = models.CharField(max_length=100)
     password = models.CharField(max_length=5, null = True)
     users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='courses')
+    is_visible = models.BooleanField(default=True)
 
     class Meta:
         unique_together = ('name', 'program')
@@ -45,6 +46,7 @@ class Announcement(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='announcements')
     title = models.CharField(max_length=30)
     body = models.CharField(max_length=100)
+    pinned = models.BooleanField(default=False)
 
     def clean(self):
         if not self.title:
@@ -57,6 +59,7 @@ class Subject(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='subjects')
     name = models.CharField(max_length=100)
     description = models.CharField(max_length=255, blank=True, null=True)
+    is_visible = models.BooleanField(default=True)
 
     def clean(self):
         if not self.name:
