@@ -20,6 +20,8 @@ from django.urls import path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 
+from backend.analytics_apis import AnalyticsOverviewApi, AnalyticsByCourseApi
+
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -45,7 +47,10 @@ urlpatterns = [
                 path("subjects/", include("institution.subjects.urls")),
                 path("users/", include("users.urls")),
                 path('auth/', include('custom_auth.urls')),
-                path('video/', include('video.urls'))
+                path('video/', include('video.urls')),
+                path('quizzes/', include('quiz.urls')),
+                path('analytics/overview/', AnalyticsOverviewApi.as_view()),
+                path('analytics/course/<int:course_id>/', AnalyticsByCourseApi.as_view()),
             ]
         )
     )

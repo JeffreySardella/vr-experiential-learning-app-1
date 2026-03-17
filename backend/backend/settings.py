@@ -59,6 +59,7 @@ CUSTOM_APPS = [
     'custom_auth.apps.CustomAuthConfig',
     'institution.apps.InstitutionConfig',
     'video.apps.VideoConfig',
+    'quiz',
 ]
 
 INSTALLED_APPS = [

@@ -20,3 +20,13 @@ class VideoGetSchema(serializers.Serializer):
     video = FileFieldNoLeadingSlash()
     title = serializers.CharField()
     description = serializers.CharField()
+    duration_seconds = serializers.IntegerField(allow_null=True, required=False)
+    thumbnail_url = serializers.SerializerMethodField()
+
+    def get_thumbnail_url(self, obj):
+        if obj.thumbnail:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.thumbnail.url)
+            return obj.thumbnail.url
+        return None

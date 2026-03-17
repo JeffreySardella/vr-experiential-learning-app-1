@@ -1,5 +1,6 @@
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -9,7 +10,7 @@ from .serializers import SubjectVideosApiPostSerializer
 
 from video.models import Video
 
-from institution.models import Course
+from institution.models import Course, Subject
 
 class SubjectVideosApi(APIView):
     @swagger_auto_schema(
@@ -51,3 +52,25 @@ class SubjectVideoByIdApi(APIView):
             return Response({}, status=status.HTTP_404_NOT_FOUND)
         video.subjects.remove(subject)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class SubjectVisibilityApi(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, subject_id):
+        subject = Subject.objects.get(id=subject_id)
+        subject.is_visible = not subject.is_visible
+        subject.save()
+        return Response({'is_visible': subject.is_visible})
+
+
+class SubjectVideoOrderApi(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, subject_id):
+        subject = Subject.objects.get(id=subject_id)
+        video_ids = request.data.get('video_ids', [])
+        subject.videos.clear()
+        for video_id in video_ids:
+            subject.videos.add(video_id)
+        return Response({'status': 'reordered', 'video_ids': video_ids})

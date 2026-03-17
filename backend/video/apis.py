@@ -36,7 +36,7 @@ class VideoApi(APIView):
         if exclude_course_id:
             videos = videos.exclude(courses__id=exclude_course_id)
 
-        serializer = VideoGetSchema(videos, many=True)
+        serializer = VideoGetSchema(videos, many=True, context={'request': request})
         return Response(serializer.data)
 
 
@@ -48,7 +48,7 @@ class VideoByIdApi(APIView):
     )
     def get(self, request, id):
         video = Video.objects.get(id=id)
-        serializer = VideoGetSchema(video)
+        serializer = VideoGetSchema(video, context={'request': request})
         data = serializer.data
         return Response(data)
 
@@ -84,7 +84,7 @@ class UploadVideoApi(APIView):
                 video = services.create_video(**video_data)
             except ValidationError as e:
                 return Response(e, status=status.HTTP_400_BAD_REQUEST)
-            serializer = VideoGetSchema(video)
+            serializer = VideoGetSchema(video, context={'request': request})
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
