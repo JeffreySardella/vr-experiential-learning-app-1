@@ -42,7 +42,7 @@ export function withAuth<P extends object>(
     useEffect(() => {
       const check = async () => {
         try {
-          const res = await apiGet("/api/auth/user");
+          const res = await apiGet("/api/auth/user/");
           if (!res.ok) { router.replace(login); return; }
           const data: UserData = await res.json();
           const role = getUserRole(data.groups);

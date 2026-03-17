@@ -14,7 +14,7 @@ const Home = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await fetch(`${process.env.API_URL}/api/auth/user`, {
+        const response = await fetch(`${process.env.API_URL}/api/auth/user/`, {
           credentials: "include",
         });
         if (response.ok) {

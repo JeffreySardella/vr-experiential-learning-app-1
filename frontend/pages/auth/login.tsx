@@ -1,10 +1,10 @@
-import { useState, FormEvent } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import { useRouter } from "next/router";
 import { Box, TextField, Typography, Alert, Link as MuiLink } from "@mui/material";
 import GlassCard from "@/components/ui/GlassCard";
 import GradientButton from "@/components/ui/GradientButton";
 import AuroraBackground from "@/components/landing/AuroraBackground";
-import { apiPost } from "@/lib/api";
+import { apiGet, apiPost } from "@/lib/api";
 import { dashboardAdmin, dashboardInstructor, dashboardStudent, register } from "@/links/links";
 import Link from "next/link";
 
@@ -14,6 +14,21 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    apiGet("/api/auth/user/").then(async (res) => {
+      if (res.ok) {
+        const data = await res.json();
+        const groups = data.groups || [];
+        const isAdmin = groups.some((g: { name: string }) => g.name === "admin");
+        const isInstructor = groups.some((g: { name: string }) => g.name === "instructor");
+        if (isAdmin) router.replace(dashboardAdmin);
+        else if (isInstructor) router.replace(dashboardInstructor);
+        else router.replace(dashboardStudent);
+      }
+    }).catch(() => {});
+  }, [router]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();

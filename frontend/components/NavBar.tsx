@@ -36,7 +36,7 @@ export default function NavBar() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await apiGet("/api/auth/user");
+        const res = await apiGet("/api/auth/user/");
         if (res.ok) {
           const data: UserData = await res.json();
           setUser(data);
